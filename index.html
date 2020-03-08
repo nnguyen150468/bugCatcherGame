@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Catcher</title>
+    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section id="container">
+       <div class="half">
+        <canvas id="canvas"></canvas>
+       </div>
+   
+    <div class="half" id="stats">  
+        <div id="right-wing">
+            <h1>Welcome, Bug Catcher</h1>
+        <div id="description">One bug gives you joy, another kills you</div>
+        <div id="nameArea">Your name here</div>
+        <input type="text" id="userName" placeholder="Your name">
+        <button id="changePlayerButton" onclick="changePlayer()">Enter Name</button>
+        <div class="buttons">
+            <button id="startButton" onclick="start()">Start</button>
+        <button id="stopCurrentPlayerButton" onclick="stopCurrentPlayer()">Change Player</button>
+        </div>
+        
+        <h2 id="resultArea">Score: 0</h2>
+        <h2 id="timeArea">Time elapsed: 0</h2>
+        <button id="recordButton" onclick="unhideRecord()">History</button>
+        <div id="recordArea"></div>
+        <h2 >Best Score</h2>
+        <div id="bestScore"></div>
+        </div>
+        
+    </div>
+</section>
+    <script src="main.js"></script>
+</body>
+</html>
