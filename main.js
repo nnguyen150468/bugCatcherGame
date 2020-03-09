@@ -9,58 +9,77 @@ ctx = canvas.getContext("2d");
 canvas.width = 512;
 canvas.height = 450;
 
+//set initial Hero and Monster's positions
+let heroX = canvas.width/2;
+let heroY = canvas.height/2;
+let monsterX = 100;
+let monsterY = 100;
+
+//speed of moving for characters
+let speedX = 5;
+let speedY = 5;
+
+let score = 0;
+
+let keysDown = {};
+
 let bgReady, heroReady, monsterReady, bugReady;
 let bgImage, heroImage, monsterImage, bugImage;
-
 let gameOverImage, gameOverImageReady;
-
 let bugEscapeImage, bugEscapeImageReady;
-
 let bugEscapeX, bugEscapeY;
 
 let bugList = [];
-
 let bugNumber = 0;
 
+//keeping time
 let startTime = Date.now();
 const SECONDS_PER_ROUND = 30;
 let elapsedTime = 0;
 
-let gameOver = false;
-
+//get all the area elements
 let resultArea = document.getElementById("resultArea");
 let timeArea = document.getElementById("timeArea");
 let recordArea = document.getElementById("recordArea");
-let record=[];
 let nameArea = document.getElementById("nameArea");
+let nameInput = document.getElementById("userName");
 
 let startButton = document.getElementById("startButton");
 let stopCurrentPlayerButton = document.getElementById("stopCurrentPlayerButton");
 
-
-let nameInput = document.getElementById("userName");
+//conditions to start game
+let gameOver = false;
 let nameEntered = false;
-
-
 startButton.disabled=true;
 let userName;
 
+//gameNumber to keep track of how many games in TOTAL were played
 let gameNumber = 0;
-
+//for new player, game turn goes back to 0
 let gameTurn =0;
 
+//keeping record of games played and results
+let record=[];
 let scorePerSecond;
-
+let bestScore;
+let bestScoreArea = document.getElementById("bestScore");
+let scoreArray =[];
+let bestScoreIndex;
 let localData;
 
-let bestScore;
+//Enter Name button. After this start button becomes enabled.
+function changePlayer(){
+    userName = nameInput.value;
+    if(userName.length==0){
+        alert('Please enter your name');
+    } else {
+    startButton.disabled=false;
+    gameTurn = 0;
+    nameArea.innerHTML=userName;
+    }  
+}
 
-let bestScoreArea = document.getElementById("bestScore");
-
-let scoreArray =[];
-
-let bestScoreIndex;
-
+//Start button. Game starts
 function start(){
     userName = nameInput.value;
     if(userName.length==0){
@@ -72,24 +91,14 @@ function start(){
     }
 }
 
+//Change player button. Start button becomes 
 function stopCurrentPlayer(){
     nameInput.value=null;
     stopCurrentPlayerButton.disabled=true;
     startButton.disabled=true;
 }
 
-function changePlayer(){
-    userName = nameInput.value;
-    if(userName.length==0){
-        alert('Please enter your name');
-    } else {
-    startButton.disabled=false;
-    gameTurn = 0;
-    nameArea.innerHTML=userName;
-    }
-    
-}
-
+//record game result into record array after each game
 function recording(){
     entry = {
         player: userName,
@@ -99,10 +108,9 @@ function recording(){
 };
     record.push(entry);
     scoreArray.push(score);
-    //test localStorage
-  
 }
 
+//get data to local storage. Show history after each game.
 function showRecord(){
     localStorage.setItem('record', JSON.stringify(record));
     localData=JSON.parse(localStorage.getItem('record'));
@@ -115,6 +123,7 @@ function showRecord(){
     gameNumber++;
 }
 
+//History button. Click to hide/unhide data.
 function unhideRecord(){
     let x = document.getElementById("recordArea");
   if (x.style.display === "none") {
@@ -124,6 +133,7 @@ function unhideRecord(){
   }
 }
 
+//load images before starting
 function loadImages() {
     for(bugNumber; bugNumber<20; bugNumber++){
         let bugImage = new Image();
@@ -139,13 +149,14 @@ function loadImages() {
         bugReady:false
     })
     }
-
+    //only becomes ready when user loses
     gameOverImage = new Image();
     gameOverImage.onload = function(){
         gameOverImageReady = false;
     }
     gameOverImage.src = 'images/gameOver.png'
 
+    //only becomes ready when hero touches the good bug
     bugEscapeImage = new Image();
     bugEscapeImage.onload = function(){
         bugEscapeImageReady = false;
@@ -171,22 +182,7 @@ function loadImages() {
     monsterImage.src='images/monster.png';
 }
 
-
-let heroX = canvas.width/2;
-let heroY = canvas.height/2;
-
-let monsterX = 100;
-let monsterY = 100;
-
-let speedX = 5;
-let speedY = 5;
-
-//DEFINE TEST POSITION
-
-let score = 0;
-
-let keysDown = {};
-
+//when hero touches the bad bug. Game turn +1
 function youLose(){
     gameOver=true;
     gameOverImageReady = true;    
@@ -196,6 +192,7 @@ function youLose(){
     gameTurn++;
 }
 
+//reset all numbers to original
 function reset(){
     gameOver=false;
     heroX=canvas.width/2;
@@ -327,6 +324,7 @@ let update = function(){
     showMessages();
 }
 
+//get and display best score
 function findBestScore(){
     bestScore=Math.max(...scoreArray);
     bestScoreIndex = scoreArray.indexOf(bestScore);
